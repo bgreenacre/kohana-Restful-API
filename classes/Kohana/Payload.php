@@ -307,7 +307,7 @@ class Kohana_Payload implements ArrayAccess, Serializable {
             return $this;
         }
 
-        if ($field !== NULL)
+        if ($name !== NULL)
         {
             $this->_errors[$name] = $msg;
         }

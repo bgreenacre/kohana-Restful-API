@@ -62,21 +62,14 @@ class Kohana_Controller_Rest extends Controller {
             $this->response
                 ->headers('Allow', implode(', ', array_keys($this->_action_map)));
 
-            throw new HTTP_Exception('Method ":method" is not allowed.', array(
+            throw new HTTP_Exception_405('Method ":method" is not allowed.', array(
                 ':method'   => $this->_method,
-            ), 405);
-        }
-        else
-        {
-            // Override the action to the mapped one.
-            $this->request->action($this->_action_map[$this->_method]);
+            ));
         }
     }
 
     public function after()
     {
-        parent::after();
-
         if (in_array($this->_method, array(HTTP_Request::PUT, HTTP_Request::DELETE, HTTP_Request::POST)))
         {
             // Do not cache any request that's not a GET method.
@@ -94,6 +87,57 @@ class Kohana_Controller_Rest extends Controller {
         }
 
         $this->_payload->render($this->request, $this->response);
+    }
+
+    public function execute()
+    {
+        try
+        {
+            // Execute the "before action" method
+            $this->before();
+
+            // Override the action to the mapped one.
+            $this->request->action($this->_action_map[$this->_method]);
+            $action = 'action_'.$this->request->action();
+
+            // If the action doesn't exist, it's a 404
+            if ( ! method_exists($this, $action))
+            {
+                throw HTTP_Exception::factory(404,
+                    'The requested URL :uri was not found on this server.',
+                    array(':uri' => $this->request->uri())
+                )->request($this->request);
+            }
+
+            // Execute the action itself
+            $this->{$action}();
+
+            // Execute the "after action" method
+            $this->after();
+
+            // Return the response
+            return $this->response;
+        }
+        catch(HTTP_Exception $e)
+        {
+            $this->response->status($e->getCode());
+            Payload::instance()
+                ->code($e->getCode())
+                ->errors($e->getMessage())
+                ->render($this->request, $this->response);
+
+            return $this->response;
+        }
+        catch(Kohana_Exception $e)
+        {
+            $this->response->status(500);
+            Payload::instance()
+                ->code(500)
+                ->errors($e->getMessage())
+                ->render($this->request, $this->response);
+
+            return $this->response;
+        }
     }
 
 }
