@@ -1,13 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kummerspeck - A multi-tiered CMS.
+ * Payload - Provides the ability to render PHP arrays to different formats.
  *
- * @package Kummerspeck
- * @author  Brian Greenacre <bgree53@searshc.com>
- * @author  Sebastian Frohm <sfrohm@searshc.com>
+ * @package Kohana-Restful-API
  * @version $id$
+ * @author Brian Greenacare bgreenacre42@gmail.com
  */
-
-// ----------------------------------------------------------------------------
-
 class Payload extends Kohana_Payload {}
