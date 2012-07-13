@@ -359,28 +359,35 @@ class Kohana_Payload implements ArrayAccess, Serializable {
      */
     public function debug($name = NULL, $lines = NULL, array $data = NULL)
     {
-        if ($name === NULL) {
+        if ($name === NULL)
+        {
             return $this->_debug;
         }
 
-        if ($lines === NULL) {
+        if ($lines === NULL)
+        {
             return Arr::get($this->_debug, $name);
         }
 
-        if (is_array($name) AND Arr::is_assoc($name)) {
+        if (is_array($name) AND Arr::is_assoc($name))
+        {
             $this->_debug = Arr::merge($this->_debug, $name);
         }
-        else {
-            if (is_array($lines)) {
+        else
+        {
+            if (is_array($lines))
+            {
                 array_walk($lines, function(&$value, $index, $data) {
-                    if (is_string($value)) {
+                    if (is_string($value))
+                    {
                         $value = __($value, $data);
                     }
                 }, $data);
 
                 $this->_debug[$name] = $lines;
             }
-            else {
+            else
+            {
                 $this->_debug[$name][] = __($lines, $data);
             }
         }
@@ -412,8 +419,6 @@ class Kohana_Payload implements ArrayAccess, Serializable {
 
                 if ($filter)
                 {
-                    $data = array();
-
                     foreach ($filter as $name)
                     {
                         $data[$param] = (isset($this->{'_'.$name})) ? $this->{'_'.$name} : NULL;

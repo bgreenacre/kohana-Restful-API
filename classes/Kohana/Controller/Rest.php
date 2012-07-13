@@ -1,5 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * Kohana_Controller_Rest - Extend this controller to make your controllers RESTful.
+ *
+ * @package Kohana-Restful-API
+ * @version $id$
+ * @author Brian Greenacare bgreenacre42@gmail.com
+ */
 class Kohana_Controller_Rest extends Controller {
 
     /**
@@ -24,13 +31,19 @@ class Kohana_Controller_Rest extends Controller {
     protected $_method;
 
     /**
-     * payload - Contains to serialize response.
+     * payload - Contains the content to be serialized in the response.
      *
      * @var object
      * @access public
      */
     protected $_payload;
 
+    /**
+     * before 
+     * 
+     * @access public
+     * @return void
+     */
     public function before()
     {
         parent::before();
@@ -49,7 +62,8 @@ class Kohana_Controller_Rest extends Controller {
 
         if (HTTP_Request::PUT == $this->_method)
         {
-            // Parse the request body and put it into the post
+            // Parse the request body and put it into the post.
+            // This is to make accessing request data more consistent.
             parse_str($this->request->body(), $_POST);
             $_POST = Kohana::sanitize($_POST);
 
@@ -68,11 +82,17 @@ class Kohana_Controller_Rest extends Controller {
         }
     }
 
+    /**
+     * after 
+     * 
+     * @access public
+     * @return void
+     */
     public function after()
     {
         if (in_array($this->_method, array(HTTP_Request::PUT, HTTP_Request::DELETE, HTTP_Request::POST)))
         {
-            // Do not cache any request that's not a GET method.
+            // Do not cache any request that's is meant to change resources.
             $this->response
                 ->headers('cache-control', 'no-cache, no-store, max-age=0, must-revalidate');
         }
@@ -89,6 +109,12 @@ class Kohana_Controller_Rest extends Controller {
         $this->_payload->render($this->request, $this->response);
     }
 
+    /**
+     * execute 
+     * 
+     * @access public
+     * @return void
+     */
     public function execute()
     {
         try
