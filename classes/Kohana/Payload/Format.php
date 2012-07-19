@@ -4,6 +4,7 @@
  * Kohana_Payload_Format - Wrapper class for Payload Format classes.
  *
  * @package Kohana-Restful-API
+ * @subpackage Payload
  * @version $id$
  * @author Brian Greenacare bgreenacre42@gmail.com
  */

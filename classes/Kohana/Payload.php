@@ -4,6 +4,7 @@
  * with HMVC reqeusts in order to build a serialized result.
  *
  * @package Kohana-Restful-API
+ * @subpackage Payload
  * @version $id$
  * @author Brian Greenacare bgreenacre42@gmail.com
  */
@@ -106,6 +107,14 @@ class Kohana_Payload implements ArrayAccess, Serializable {
         $this->_init();
     }
 
+    /**
+     * determine_format - Attempt to figure out the right
+     * Payload_Format class to use based on the preferred_accept
+     * header on the Request object.
+     *
+     * @access public
+     * @return void
+     */
     public function determine_format()
     {
         foreach (Payload::$_accepted_types as $format => $types)
